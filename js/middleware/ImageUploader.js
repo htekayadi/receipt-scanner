@@ -1,4 +1,5 @@
   import Storage from '@google-cloud/storage';
+  import Vision from "@google-cloud/vision";
   import sharp from 'sharp';
   import config from '../config/config';
   import imageTransformations from '../enums/ImageTransformations';
@@ -14,28 +15,20 @@
     return 'https://storage.googleapis.com/' + bucketName + '/' + fileName;
   };
 
-  const getSuffixedFileName = (fileName, suffix) => {
-    if (!suffix || suffix === '') {
-      return fileName;
-    }
-
-    const [originalFileName, extension] = fileName.split('.');
-    return `${originalFileName}_${suffix}.${extension}`;
-  };
-
+  const client = new Vision.ImageAnnotatorClient({
+    keyFilename: config.keyFilename
+  });
+  
   const ImageUploader = {};
   ImageUploader.uploadToCloud = (req, res, next) => {
     if (!req.file) {
       return next();
     }
 
-    const cloudFileName = req.file.originalname;
+    const fileName = req.file.originalname;
     const imageBuffer = req.file.buffer;
     req.file.publicUrls = [];
     imageTransformations.forEach((fileProperties) => {
-      const suffix = fileProperties.suffix;
-      const fileName = getSuffixedFileName(cloudFileName,
-                                           suffix);
       const file = bucket.file(fileName);
       const image = sharp(imageBuffer).resize(fileProperties.width, fileProperties.height);
 
@@ -51,13 +44,13 @@
       });
 
       stream.on('finish', () => {
-        req.file['cloudStorageObject_' + suffix] = fileName;
         req.file.publicUrls.push({url: getPublicImageUrl(fileName),
           height: fileProperties.height, width: fileProperties.width
         });
         if (req.file.publicUrls.length === imageTransformations.length) {
           next();
         }
+        req.file.cloudStorageObject = fileName;
       });
 
       image.toBuffer((err, data) => {
@@ -67,6 +60,27 @@
       });
     });
   };
+
+  ImageUploader.getVision = async (req, res) => {
+    const data = req.body;
+    if (req.file && !req.file.cloudStorageError && req.file.publicUrls && req.file.publicUrls.length > 0) {
+      const [result] = await client.textDetection(`gs://${config.bucketName}/${req.file.originalname}`);
+      const detections = result.textAnnotations;
+      const label_array = [];
+      detections.forEach(text => {
+        if(!isNaN(text.description)) {
+          label_array.push({number: text.description, vertices: text.boundingPoly.vertices });
+        }
+      });
+
+      data.images = req.file.publicUrls;
+      data.numbers = label_array;
+    } else if (req.file.cloudStorageError) {
+      data.error = req.file.cloudStorageError;
+    }
+
+    res.send(data);
+  }
 
   ImageUploader.filterFiles = (req, file, callback) => {
     if (!file || !file.originalname.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {

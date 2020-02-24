@@ -1,7 +1,6 @@
 const imageTransformations = [{
-  'suffix': 'preview',
-  'width': 1000,
-  'height': 1600
+  'width': 400,
+  'height': 600
 }];
 
 export default imageTransformations;
