@@ -1,5 +1,5 @@
 # Receipt Scanner
-Upload image and resizes them to four sizes and saves these images on Google Cloud Storage
+Upload image and save image on Google Cloud Storage
 
 # Geting Started
 
@@ -11,7 +11,8 @@ Upload image and resizes them to four sizes and saves these images on Google Clo
 6. `npm start`
 
 # TODO
-1. Unit Testing
-2. Better error handling.
-3. Resizing extracted out as jobs.
-4. Home gets past images from bucket(?).
+1. Display boxes over text
+2. Detect mouse click and display text value
+3. Unit Testing
+4. Better error handling.
+

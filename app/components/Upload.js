@@ -33,7 +33,7 @@ export default class Upload extends React.Component {
       .then((response) => {
         if (!response.data.error) {
           this.setState(Object.assign({}, this.state, { uploading: false, selected: false }));
-          this.props.getImageList(response.data.images);
+          this.props.getImageList(response.data.images, response.data.numbers);
         } else {
           alert(response.data.error.message);
           this.setState({
