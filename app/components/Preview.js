@@ -7,18 +7,29 @@ export default class Preview extends React.Component {
     super(props);
   }
 
-  render() {
-    const imageList = [];
-    this.props.imageUrls.forEach((image) => {
-      imageList.push(<Image as="a" src={image.url} size="medium" target="_blank" href={image.url} />);
-    });
+  handleClick = (e) => {  
+    const x = e.nativeEvent.offsetX;
+    const y = e.nativeEvent.offsetY;
 
+    this.setState({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY});
+    this.props.numbers.forEach(number => {
+      if(x >= number.vertices[0].x && x <= number.vertices[1].x && y >= number.vertices[0].y && y <= number.vertices[2].y) {
+        window.confirm(number.number);
+        return;
+      }
+    })
+  }
+
+  render() {
+    const imageUrl = this.props.imageUrls[0] ? this.props.imageUrls[0].url : ''
     return (
       <div>
         <Grid container divided streched centered>
-          <Image.Group>
-            { imageList }
-          </Image.Group>
+        <div className="previewComponent">
+                <div className="imgPreview">
+                    <img src={imageUrl} alt="" onClick={this.handleClick}/>
+                </div>
+            </div>
         </Grid>
       </div>
     );
