@@ -1,10 +1,11 @@
 import React from 'react';
-import { Image, Grid } from 'semantic-ui-react';
+import { Grid, Confirm } from 'semantic-ui-react';
 const { array } = React.PropTypes;
 
 export default class Preview extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { open: false, text: '' };
   }
 
   handleClick = (e) => {  
@@ -14,11 +15,14 @@ export default class Preview extends React.Component {
     this.setState({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY});
     this.props.numbers.forEach(number => {
       if(x >= number.vertices[0].x && x <= number.vertices[1].x && y >= number.vertices[0].y && y <= number.vertices[2].y) {
-        window.confirm(number.number);
+        this.setState({ open: true, text: number.number })
         return;
       }
     })
   }
+
+  handleConfirm = () => this.setState({ open: false })
+  handleCancel = () => this.setState({ open: false })
 
   componentDidMount() {
     const canvas = this.refs.canvas;
@@ -48,6 +52,13 @@ export default class Preview extends React.Component {
     const imageUrl = this.props.imageUrls[0] ? this.props.imageUrls[0].url : ''
     return (
       <div>
+        <Confirm
+          open={this.state.open}
+          content={this.state.text}
+          onCancel={this.handleCancel}
+          onConfirm={this.handleConfirm}
+          size="medium"
+        />
         <Grid container divided streched centered>
           <div className="previewComponent">
               <div className="imgPreview">

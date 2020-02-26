@@ -1,5 +1,7 @@
 # Receipt Scanner
-Upload image and save image on Google Cloud Storage
+Upload and save image to Google Cloud Storage
+
+![Receipt Scanner Demo](screenplay.gif)
 
 # Geting Started
 
@@ -9,10 +11,3 @@ Upload image and save image on Google Cloud Storage
 4. Use default authentication using `gcloud beta auth application-default login`
 5. `npm install`
 6. `npm start`
-
-# TODO
-1. Display boxes over text
-2. Detect mouse click and display text value
-3. Unit Testing
-4. Better error handling.
-

@@ -81,8 +81,8 @@ export default class Upload extends React.Component {
                   <Image wrapped src={this.state.ImageSrc} />
                 </Modal.Content>
                 <Modal.Actions>
-                  <Button content="Cancel" actionPosition="left" negative onClick={this.popupClose} disabled={this.uploading}/>
-                  <Button loading={this.state.uploading} content="Upload" actionPostion="right" onClick={this.upload} />
+                  <Button content="Cancel" actionPosition="left" onClick={this.popupClose} disabled={this.uploading}/>
+                  <Button loading={this.state.uploading} content="Upload" primary actionPostion="right" onClick={this.upload} />
                 </Modal.Actions>
               </Modal>
             </div>
