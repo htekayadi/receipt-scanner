@@ -51,7 +51,7 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^3.4.2",
-    "express": "^4.13.3",
+    "express": "^4.17.3",
     "extract-text-webpack-plugin": "^0.8.2",
     "html-webpack-plugin": "^1.6.1",
     "jscs": "^2.1.1",
